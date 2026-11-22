@@ -1,5 +1,5 @@
 {
-  "compiilerOption": {
+  "compilerOptions": {
     // file layout
     "rootDir": ".",
     "outDir": "./dist",

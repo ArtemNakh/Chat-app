@@ -1,12 +1,14 @@
 # stage 1: install dependencies
 FROM node:24-alpine AS deps
 WORKDIR /app
-COPY pachage.json pachage-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 #Stage 2: build
 FROM node:24-alpine AS build
 WORKDIR /app
+ARG DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+ENV DATABASE_URL=${DATABASE_URL}
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY tsconfig.json ./
@@ -16,7 +18,7 @@ COPY prisma.config.ts ./
 # Generate Prisma client before build (generated/ is gitignored)
 RUN npx prisma generate
 COPY src/ ./src/
-COPY generated/ ./generated/
+# COPY generated/ ./generated/
 RUN npm run build
 
 
@@ -48,4 +50,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
 
-CMD ["node", "--env-file=.env", "dist/src/server.js"]
+CMD ["node",  "dist/src/server.js"]
