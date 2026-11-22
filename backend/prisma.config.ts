@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { defineConfig } from "prisma/config";
+import "dotenv/config";
 const databaseUrl = process.env["DATABASE_URL"];
 
 if (!databaseUrl) {
@@ -7,7 +8,7 @@ if (!databaseUrl) {
 }
 
 export default defineConfig({
-  schema: "prisma/shema.prisma",
+  schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },

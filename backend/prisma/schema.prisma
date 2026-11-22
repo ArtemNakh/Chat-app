@@ -1,0 +1,72 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum Role {
+    ADMIN
+    MODERATOR
+    MEMBER
+}
+
+model User {
+    id           String   @id @default(uuid())
+    username     String   @unique
+    email        String   @unique
+    passwordHash String
+    role         Role     @default(MEMBER)
+    createdAt    DateTime @default(now())
+
+    messages Message[]
+    groups   GroupMember[]
+}
+
+model Group {
+    id          String   @id @default(uuid())
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+
+    members  GroupMember[]
+    messages Message[]
+}
+
+model GroupMember {
+    id      String @id @default(uuid())
+    userId  String
+    groupId String
+    role    Role   @default(MEMBER)
+
+    user  User  @relation(fields: [userId], references: [id])
+    group Group @relation(fields: [groupId], references: [id])
+
+    @@unique([userId, groupId])
+    @@index([groupId])
+}
+
+model Message {
+    id       String   @id @default(uuid())
+    content  String
+    createAt DateTime @default(now())
+
+    senderId String
+    sender   User   @relation(fields: [senderId], references: [id])
+
+    groupId String
+    group   Group  @relation(fields: [groupId], references: [id])
+
+    tags Tag[]
+
+    @@index([groupId, createAt])
+    @@index([senderId])
+}
+
+model Tag {
+    id       String    @id @default(uuid())
+    name     String    @unique
+    messages Message[]
+}
