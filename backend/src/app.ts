@@ -3,6 +3,7 @@ import cors from "cors";
 import { env } from "./config/env.js";
 import helmet from "helmet";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { globalLimiter } from "./middleware/rateLimiter.js";
 
 export function createApp(): express.Express {
   const app = express();
@@ -18,6 +19,7 @@ export function createApp(): express.Express {
 
   app.use(express.json({ limit: "10kb" }));
   app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+  app.use(globalLimiter);
 
   app.use((_req, res) => {
     res.status(404).json({ success: false, message: "Route not found" });
