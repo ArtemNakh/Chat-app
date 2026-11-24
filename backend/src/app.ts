@@ -5,6 +5,8 @@ import helmet from "helmet";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { globalLimiter } from "./middleware/rateLimiter.js";
 import { prisma } from "./database/prisma.js";
+import { authRouter } from "./routes/auth.routes.js";
+import { userRouter } from "./routes/user.router.js";
 
 export function createApp(): express.Express {
   const app = express();
@@ -31,6 +33,9 @@ export function createApp(): express.Express {
     }
   });
 
+  app.use('/api/auth', authRouter);
+  app.use('/api/users', userRouter);
+  
   app.use((_req, res) => {
     res.status(404).json({ success: false, message: "Route not found" });
   });
