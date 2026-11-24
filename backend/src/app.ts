@@ -8,6 +8,7 @@ import { prisma } from "./database/prisma.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { userRouter } from "./routes/user.router.js";
 import { roomRouter } from "./routes/room.routes.js";
+import { chatRouter } from "./routes/chat.routes.js";
 
 export function createApp(): express.Express {
   const app = express();
@@ -37,6 +38,7 @@ export function createApp(): express.Express {
   app.use("/api/auth", authRouter);
   app.use("/api/users", userRouter);
   app.use("/api/groups", roomRouter);
+  app.use('/api/messages', chatRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ success: false, message: "Route not found" });
