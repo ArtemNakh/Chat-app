@@ -51,7 +51,7 @@ model GroupMember {
 model Message {
     id       String   @id @default(uuid())
     content  String
-    createAt DateTime @default(now())
+    createdAt DateTime @default(now())
 
     senderId String
     sender   User   @relation(fields: [senderId], references: [id])
@@ -61,7 +61,7 @@ model Message {
 
     tags Tag[]
 
-    @@index([groupId, createAt])
+    @@index([groupId, createdAt])
     @@index([senderId])
 }
 
